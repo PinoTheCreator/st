@@ -180,6 +180,7 @@ static char *opt_io    = NULL;
 static char *opt_line  = NULL;
 static char *opt_name  = NULL;
 static char *opt_title = NULL;
+static char *opt_dir   = NULL;
 
 
 static uint buttons; /* bit field of pressed buttons */
@@ -2619,11 +2620,13 @@ void
 usage(void)
 {
 	die("usage: %s [-aiv] [-c class]"
+		" [-d path]"
 		" [-f font] [-g geometry]"
 	    " [-n name] [-o file]\n"
 	    "          [-T title] [-t title] [-w windowid]"
 	    " [[-e] command [args ...]]\n"
 	    "       %s [-aiv] [-c class]"
+		" [-d path]"
 		" [-f font] [-g geometry]"
 	    " [-n name] [-o file]\n"
 	    "          [-T title] [-t title] [-w windowid] -l line"
@@ -2646,6 +2649,9 @@ main(int argc, char *argv[])
 		break;
 	case 'c':
 		opt_class = EARGF(usage());
+		break;
+	case 'd':
+		opt_dir = EARGF(usage());
 		break;
 	case 'e':
 		if (argc > 0)
@@ -2699,6 +2705,8 @@ run:
 	xinit(cols, rows);
 	xsetenv();
 	selinit();
+	if (opt_dir && chdir(opt_dir))
+		die("Can't change to working directory %s\n", opt_dir);
 	run();
 
 	return 0;
